@@ -45,6 +45,6 @@ export const getBlock = async () => {
     id: blockData[1],
   };
   const response = await axios.post('https://eth.public-rpc.com', data);
-  console.log('block data', response.data);
+  // console.log('block data', response.data);
   //   Container.set('blockNumber', response.data.result);
 };

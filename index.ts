@@ -47,7 +47,7 @@ io.on('connection', async (socket: Socket) => {
 
 Container.set('socket', io);
 
-httpServer.listen(3000);
+httpServer.listen(process.env.PORT || 3000);
 
 httpServer.on('listening', () => {
   console.log('server running', httpServer.address());

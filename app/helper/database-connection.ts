@@ -8,18 +8,18 @@ rcUseContainer(Container);
 typeOrmUseContainer(Container);
 
 export const AppDataSource = new DataSource({
-  //   url: 'mysql://avnadmin:AVNS_QXLXfpx8bLukAUUnFOR@sample-database-gbengstar-3a41.a.aivencloud.com:28270/defaultdb?ssl-mode=REQUIRED',
   type: 'mysql',
-  host: 'sample-database-gbengstar-3a41.a.aivencloud.com',
-  port: 28270,
-  username: 'avnadmin',
-  password: 'AVNS_QXLXfpx8bLukAUUnFOR',
-  database: 'defaultdb',
-  synchronize: true,
-  //   logging: true,
-  entities: [User],
+  host: process.env.DB_HOST, //'localhost',
+  port: +process.env.DB_PORT,
+  username: process.env.DB_USERNAME,
+  password: process.env.PASSWORD, //'metaverse', //'AVNS_QXLXfpx8bLukAUUnFOR',
+  database: process.env.DATABASE, //'metaverse', //'defaultdb',
+  // synchronize: true,
+  logging: true,
+  // entities: [User],
   subscribers: [],
   migrations: [],
+  timezone: 'Z',
 });
 
 AppDataSource.initialize()
