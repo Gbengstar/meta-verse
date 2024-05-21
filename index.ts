@@ -12,6 +12,9 @@ import { getSocketRequestToken } from './app/helper/socketAuthentication';
 import { SocketMapService } from './app/service/socketMapService';
 import { joinRooms } from './app/helper/joinRoom';
 import { getBlock, getBlockNumber } from './app/service/axiosService';
+import { authenticateSocketRequest } from './app/middleware/socketMiddleware';
+import { mapSocketInstance } from './app/helper/mapSocketInstance';
+import { getUserToken } from './app/helper/getSocketRequestToken';
 config();
 const app = createExpressServer({
   controllers: [UserController],
@@ -23,31 +26,20 @@ app.use(express.urlencoded({ extended: true }));
 const httpServer = createServer(app);
 const io = new Server(httpServer, {});
 
-io.on('connection', async (socket: Socket) => {
-  try {
-    // process user token and ensure it is a valid request
-    const userToken = await getSocketRequestToken(socket.request as Request);
+io.use(authenticateSocketRequest);
 
-    if (!userToken) socket.disconnect();
-    const socketMap: SocketMapService = Container.get(SocketMapService);
-    socketMap.addSocket(userToken.username, socket);
+io.on('connection', (socket: Socket) => {
+  //get user token
+  const userToken = getUserToken(socket);
 
-    // create event to delete mapped socket when user disconnect
-    socket.on('disconnect', () => {
-      socketMap.deleteSocket(userToken.username);
-    });
+  //map socket instance for future reference
+  mapSocketInstance(userToken, socket);
 
-    // join rooms available to all users
-    joinRooms(socket);
-  } catch (error) {
-    console.log(error);
-    socket.disconnect();
-  }
+  // join general rooms
+  joinRooms(socket);
 });
 
-Container.set('socket', io);
-
-httpServer.listen(process.env.PORT || 3000);
+httpServer.listen(process.env.PORT);
 
 httpServer.on('listening', () => {
   console.log('server running', httpServer.address());

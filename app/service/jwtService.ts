@@ -15,15 +15,10 @@ export class JWTService {
 
   signToken(tokenData: TokenDto): Promise<string> {
     return new Promise((resolve, reject) => {
-      jwt.sign(
-        tokenData,
-        this.secret,
-
-        (err, encoded: string) => {
-          if (err) reject(new Error(err));
-          resolve(encoded);
-        }
-      );
+      jwt.sign(tokenData, this.secret, {}, (err: Error, encoded: string) => {
+        if (err) reject('error occur while signing token');
+        resolve(encoded);
+      });
     });
   }
 
@@ -53,7 +48,8 @@ export class JWTService {
   }
 
   decode(token: string) {
-    return jwt.decode(token, { complete: true }) as TokenDto;
+    const { payload } = jwt.decode(token, { complete: true });
+    return payload as TokenDto;
   }
 
   getToken(req: Request) {
