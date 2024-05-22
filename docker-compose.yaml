@@ -1,23 +1,25 @@
-# Use root/example as user/password credentials
-version: '3.1'
+version: '3.8'
 
 services:
-  # mysql:
-  #   image: mysql:8.0.30
-  #   restart: always
-  #   environment:
-  #     MYSQL_ROOT_PASSWORD: metaverse
-  #     MYSQL_USER: metaverse
-  #     MYSQL_PASSWORD: metaverse
-  #     MYSQL_DATABASE: metaverse
-  #   # volumes:
-  #   #   - my-datavolume:/var/lib/mysql
-  #   ports:
-  #     - 33060:33060
-  #   healthcheck:
-  #     test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
-  #     timeout: 20s
-  #     retries: 10
+  postgres:
+    container_name: postgres
+    image: postgres
+    hostname: localhost
+    ports:
+      - '5431:5432'
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: metaverse
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
+    # healthcheck:
+    #   test: ['CMD-SHELL', "sh -c 'pg_isready -U metaverse -d metaverse'"]
+    #   interval: 5s
+    #   timeout: 5s
+    #   retries: 5
+    # start_period: 80s
 
   metaverse:
     build:
@@ -32,11 +34,13 @@ services:
       - .env
     # Run a command against the development stage of the image
     command: yarn dev
+    links:
+      - postgres
     ports:
       - 3000:3000
-    # depends_on:
-    #   mysql:
-    #     condition: service_healthy
+    depends_on:
+      - postgres
+      # condition: service_completed_successfully
 
 volumes:
-  my-datavolume:
+  postgres-data:

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { randomInt } from 'crypto';
 import Container, { Service } from 'typedi';
+import { MetaVerseEvents } from '../event/processRPCTransactionEvent';
 
 @Service()
 export class EventsPollingService {
@@ -21,18 +22,22 @@ export class EventsPollingService {
   }
 }
 
-export const getBlockNumber = async () => {
-  const blockId = 1;
-  const data = {
-    jsonrpc: '2.0',
-    method: 'eth_blockNumber',
-    params: [],
-    id: blockId,
+const getBlockNumber = () => {
+  const getBlockNumberHandler = async () => {
+    const blockId = randomInt(1, 10);
+    const data = {
+      jsonrpc: '2.0',
+      method: 'eth_blockNumber',
+      params: [],
+      id: blockId,
+    };
+    const response = await axios.post('https://eth.public-rpc.com', data);
+    console.log('getBlockNumber', response.data);
+    Container.set('blockData', [response.data.result, blockId]);
+    getBlock();
   };
-  const response = await axios.post('https://eth.public-rpc.com', data);
-  console.log('getBlockNumber', response.data);
-  Container.set('blockData', [response.data.result, blockId]);
-  getBlock();
+
+  setInterval(getBlockNumberHandler, 10000);
 };
 
 export const getBlock = async () => {
@@ -46,5 +51,13 @@ export const getBlock = async () => {
   };
   const response = await axios.post('https://eth.public-rpc.com', data);
   // console.log('block data', response.data);
-  //   Container.set('blockNumber', response.data.result);
+  if (!response.data.result) return;
+  const metaVerseEvents = Container.get(MetaVerseEvents);
+  metaVerseEvents.emitProcessRpcResponseTransactionEvent(
+    response.data.result.transactions
+  );
 };
+
+// start up rpc request process
+
+(() => getBlockNumber())();
