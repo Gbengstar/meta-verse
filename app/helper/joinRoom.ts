@@ -1,9 +1,9 @@
 import { Socket } from 'socket.io';
-import { RoomEnum } from '../enum/roomEnum';
+import { SocketRoomEnum } from '../enum/roomEnum';
 
 export const joinRooms = (socket: Socket) => {
   // iterate on the rooms and join each
-  for (const room in RoomEnum) {
+  for (const room in SocketRoomEnum) {
     socket.join(room);
   }
 };

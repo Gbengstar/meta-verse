@@ -1,4 +1,4 @@
-import Container, { Inject, Service } from 'typedi';
+import { Inject, Service } from 'typedi';
 import { User } from '../model/userModel';
 import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 

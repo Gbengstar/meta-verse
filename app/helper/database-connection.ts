@@ -10,18 +10,24 @@ rcUseContainer(Container);
 typeOrmUseContainer(Container);
 
 export const AppDataSource = new DataSource({
-  type: 'mysql',
-  url: process.env.DB_URL,
+  type: 'postgres',
+  username: 'admin',
+  password: 'root',
+  database: 'metaverse',
+  host: 'postgres',
+  port: 5432,
+  // url: process.env.DB_URL,
   synchronize: true,
   // logging: true,
   entities: [User],
   subscribers: [],
   migrations: [],
-  timezone: 'Z',
+  // timezone: 'Z',
 });
 
 AppDataSource.initialize()
   .then(() => {
+    console.log('Data base connected');
     // here you can start to work with your database
   })
   .catch((error) => console.log(error));
