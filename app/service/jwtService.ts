@@ -3,6 +3,7 @@ import * as jwt from 'jsonwebtoken';
 import { Request } from 'express';
 import { TokenDto } from '../dto/tokenDto';
 import { config } from 'dotenv';
+import { CustomError } from '../helper/customError';
 config();
 
 @Service()
@@ -28,16 +29,9 @@ export class JWTService {
         jwt.verify(token, this.secret, (err, decoded: any) => {
           if (err) {
             if (err.name === 'TokenExpiredError') {
-              throw new Error(
-                'token expired'
-                // {
-                //   status: 451,
-                //   message: 'token expired',
-                // },
-                // 451
-              );
+              throw new CustomError(400, 'token expired');
             }
-            throw new Error(err.message);
+            throw new CustomError(400, 'error occur while verifying token');
           }
           resolve(decoded);
         });

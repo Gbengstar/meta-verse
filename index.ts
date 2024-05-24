@@ -5,15 +5,19 @@ import { createServer } from 'http';
 import { Server, Socket } from 'socket.io';
 import './app/helper/database-connection';
 import './app/helper/repositorySetter';
+import './app/service/userService';
+import './app/middleware/errorMiddleware';
+import './app/service/userService';
+import './app/service/jwtService';
 import { useExpressServer } from 'routing-controllers';
 import { AuthController } from './app/controller/authController';
 import { joinRooms } from './app/helper/joinRoom';
-import './app/service/axiosService';
+import './app/service/dataPollingService';
 import { authenticateSocketRequest } from './app/middleware/socketMiddleware';
 import { mapSocketInstance } from './app/helper/mapSocketInstance';
 import { getUserToken } from './app/helper/getSocketRequestToken';
-import './app/service/userService';
-// import { ErrorMiddleware } from './app/middleware/errorMiddleware';
+
+import { ErrorMiddleware } from './app/middleware/errorMiddleware';
 
 config();
 
@@ -24,7 +28,7 @@ app.use(express.urlencoded({ extended: true }));
 
 useExpressServer(app, {
   controllers: [AuthController],
-  // middlewares: [ErrorMiddleware],
+  middlewares: [ErrorMiddleware],
   defaultErrorHandler: false,
 });
 
