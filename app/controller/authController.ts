@@ -1,19 +1,24 @@
 import { JWTService } from '../service/jwtService';
 import Container, { Inject, Service } from 'typedi';
 import { UserService } from '../service/userService';
-import { Body, Post, JsonController } from 'routing-controllers';
+import { Body, Post, JsonController, UseAfter } from 'routing-controllers';
 import { UserDto } from '../dto/userDto';
 import { hashValue, verifyHash } from '../helper/hashFunction';
 import { CustomError } from '../helper/customError';
+import { ErrorMiddleware } from '../middleware/errorMiddleware';
 
 @JsonController()
 @Service()
+@UseAfter(ErrorMiddleware)
 export class AuthController {
   @Post('/sign-up')
   async signUp(@Body() user: UserDto) {
     const { username, password } = user;
 
     const userService: UserService = Container.get(UserService);
+    const foundUser = await userService.findOne({ where: { username } });
+
+    if (foundUser) throw new CustomError(400, 'username already exist');
 
     const hashedPassword = await hashValue(password);
 
