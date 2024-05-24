@@ -69,7 +69,7 @@ export class SocketEventService {
   sendToOneHundredToFiveHundredEventRoom(data: TransactionDto) {
     this.socket
       .to(SocketRoomEnum.ONE_HUNDRED_TO_FIVE_HUNDRED_DOLLAR_ROOM)
-      .emit(SocketEventsEnum.FIVE_HUNDRED_TO_TWO_THOUSAND_DOLLAR_EVENT, data);
+      .emit(SocketEventsEnum.ONE_HUNDRED_TO_FIVE_HUNDRED_DOLLAR_EVENT, data);
     console.debug(
       `Event sent to  ${SocketRoomEnum.ONE_HUNDRED_TO_FIVE_HUNDRED_DOLLAR_ROOM}`
     );

@@ -14,33 +14,25 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
     restart: unless-stopped
-    # healthcheck:
-    #   test: ['CMD-SHELL', "sh -c 'pg_isready -U metaverse -d metaverse'"]
-    #   interval: 5s
-    #   timeout: 5s
-    #   retries: 5
-    # start_period: 80s
 
   metaverse:
     build:
-      # dockerfile:  #Dockerfile.dev
       context: .
       # Only will build development stage from dockerfile
       target: development
     volumes:
       - .:/usr/src
-      - /usr/src/app/node_modules
+      # - /usr/src/app/node_modules
     env_file:
       - .env
     # Run a command against the development stage of the image
-    command: yarn dev
+    command: yarn start:dev
     links:
       - postgres
     ports:
       - 3000:3000
     depends_on:
       - postgres
-      # condition: service_completed_successfully
 
 volumes:
   postgres-data:
