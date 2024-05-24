@@ -12,7 +12,7 @@ import './app/middleware/errorMiddleware';
 import { useExpressServer } from 'routing-controllers';
 import { AuthController } from './app/controller/authController';
 import { joinRooms } from './app/helper/joinRoom';
-import './app/service/dataPollingService';
+import './app/helper/dataPollingService';
 import { authenticateSocketRequest } from './app/middleware/socketMiddleware';
 import { mapSocketInstance } from './app/helper/mapSocketInstance';
 import { getUserToken } from './app/helper/getSocketRequestToken';
@@ -46,8 +46,6 @@ io.on('connection', (socket: Socket) => {
   // join general rooms
   joinRooms(socket);
 });
-
-// app.use(globalErrorHandler);
 
 httpServer.listen(process.env.PORT);
 

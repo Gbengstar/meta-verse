@@ -4,7 +4,7 @@
 $ yarn
 ```
 
-## Running the app
+## Running the app with docker compose
 
 ```bash
 # development
@@ -20,7 +20,7 @@ $ sudo docker compose up --build
 
 Websocket connection can be established through http://localhost:3000
 
-Real time socket events can be the app include:
+Real time socket events on the app include:
 
 1. ALL_EVENT
 2. ZERO_TO_HUNDRED_DOLLAR_EVENT
